@@ -4,8 +4,8 @@ import { useEffect } from "react";
 
 /**
  * Revela os elementos marcados com `data-reveal` ao entrarem na tela e
- * esconde o botão flutuante enquanto o hero ou o contato estão visíveis
- * (ali já existe um botão de WhatsApp maior).
+ * esconde o botão flutuante enquanto o título/botão do hero ou o contato
+ * estão visíveis (ali já existe um botão de WhatsApp maior).
  * Sem JS (ou com movimento reduzido), tudo aparece normalmente.
  */
 export function RevealObserver() {
@@ -14,19 +14,19 @@ export function RevealObserver() {
     const cleanups: (() => void)[] = [];
 
     // Botão flutuante
-    const zones = document.querySelectorAll(".hero, #contato, .footer");
+    const zones = document.querySelectorAll(".hero-title, .hero-ctas, #contato, .footer");
     const visible = new Set<Element>();
     const fabIo = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) visible.add(entry.target);
         else visible.delete(entry.target);
       }
-      root.classList.toggle("fab-hide", visible.size > 0);
+      root.classList.toggle("fab-on", visible.size === 0);
     });
     zones.forEach((el) => fabIo.observe(el));
     cleanups.push(() => {
       fabIo.disconnect();
-      root.classList.remove("fab-hide");
+      root.classList.remove("fab-on");
     });
 
     // Revelação ao rolar

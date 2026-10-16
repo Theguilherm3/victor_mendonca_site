@@ -102,9 +102,14 @@ export default function Home() {
         {/* HISTÓRIA */}
         <section id="historia" className="story">
           <div className="wrap story-grid">
-            <div className="story-photos" data-reveal>
+            <div className="story-photos">
               <Photo slot={photos.story} className="story-main" sizes="(max-width: 900px) 88vw, 560px" />
-              <Photo slot={photos.storyDetail} className="story-detail" sizes="(max-width: 900px) 44vw, 240px" />
+              <Photo
+                slot={photos.storyDetail}
+                className="story-detail"
+                sizes="(max-width: 900px) 44vw, 240px"
+                style={delay(260)}
+              />
             </div>
             <div className="story-text">
               <h2 className="display h2" data-reveal>
@@ -169,7 +174,12 @@ export default function Home() {
             </div>
             <div className="space-grid">
               <Photo slot={photos.space} className="space-tall" sizes="(max-width: 900px) 50vw, 380px" />
-              <Photo slot={photos.landscape} className="space-wide" sizes="(max-width: 900px) 100vw, 760px">
+              <Photo
+                slot={photos.landscape}
+                className="space-wide"
+                sizes="(max-width: 900px) 100vw, 760px"
+                style={delay(140)}
+              >
                 <span className="space-caption">{site.experience.caption}</span>
               </Photo>
               <div className="feature f-ink" data-reveal>
@@ -241,7 +251,7 @@ export default function Home() {
         <section id="contato" className="contact">
           <GlowLine className="contact-glow" />
           <div className="wrap contact-inner">
-            <div className="contact-portrait" data-reveal>
+            <div className="contact-portrait">
               <Photo slot={photos.contact} className="contact-photo" sizes="240px" />
             </div>
             <h2 className="display contact-title" data-reveal>

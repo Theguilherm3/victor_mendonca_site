@@ -14,7 +14,7 @@ type Props = {
 /** Foto real quando `slot.src` existe; senão, o placeholder listrado do design. */
 export function Photo({ slot, className = "", style, sizes, priority, children }: Props) {
   return (
-    <div className={`photo ${slot.src ? "has-img" : ""} ${className}`} style={style}>
+    <div className={`photo ${slot.src ? "has-img" : ""} ${className}`} style={style} data-reveal>
       {slot.src ? (
         <Image
           src={slot.src}

@@ -287,6 +287,9 @@ h3 {
   pointer-events: none;
   fill: none;
   overflow: visible;
+  /* o brilho fica no <svg>: o Safari ignora filter em elementos internos do SVG */
+  filter: drop-shadow(0 0 3px #ffd08a) drop-shadow(0 0 12px rgba(255, 190, 110, 0.8))
+    drop-shadow(0 0 36px rgba(255, 170, 80, 0.5));
 }
 
 .glow-line path {
@@ -294,8 +297,6 @@ h3 {
   stroke-width: 2.5;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 3px #ffd08a) drop-shadow(0 0 12px rgba(255, 190, 110, 0.8))
-    drop-shadow(0 0 36px rgba(255, 170, 80, 0.5));
 }
 
 /* ---------- Animações ---------- */
@@ -330,6 +331,28 @@ h3 {
 }
 
 /* a linha "acende" da esquerda para a direita */
+/* fotos: a moldura aparece e a imagem "abre" de baixo para cima, assentando o zoom.
+   O recorte fica na <img>, não na moldura, para o IntersectionObserver enxergá-la. */
+.rv .photo.has-img[data-reveal] {
+  background: transparent;
+}
+
+.rv .photo[data-reveal] {
+  transform: none;
+  transition: opacity 0.6s var(--ease) var(--d, 0ms);
+}
+
+.rv .photo[data-reveal] > img {
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.16);
+  transition: clip-path 1.4s var(--ease) var(--d, 0ms), transform 1.8s var(--ease) var(--d, 0ms);
+}
+
+.rv .photo[data-reveal].in > img {
+  clip-path: inset(0 0 0 0);
+  transform: none;
+}
+
 .rv .glow-line[data-reveal] {
   opacity: 1;
   transform: none;
@@ -349,17 +372,16 @@ h3 {
 
 .hero {
   position: relative;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
   background: var(--ink-2);
   color: #fff;
 }
 
+/* celular: a foto é um bloco no topo que se dissolve no azul; o texto entra
+   por baixo, sempre sobre fundo escuro, qualquer que seja a altura da tela */
 .hero-media {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  height: min(64svh, 124vw);
+  overflow: hidden;
 }
 
 .hero-photo {
@@ -372,6 +394,14 @@ h3 {
   height: 100%;
   object-fit: cover;
   object-position: 46% 0%;
+  animation: settle 2.4s var(--ease) both;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
 }
 
 .hero-media::after {
@@ -380,11 +410,11 @@ h3 {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10, 24, 40, 0.6) 0%,
-    rgba(10, 24, 40, 0) 18%,
-    rgba(10, 24, 40, 0) 26%,
-    rgba(10, 24, 40, 0.88) 50%,
-    var(--ink-2) 80%
+    rgba(10, 24, 40, 0.55) 0%,
+    rgba(10, 24, 40, 0) 22%,
+    rgba(10, 24, 40, 0) 50%,
+    rgba(10, 24, 40, 0.75) 78%,
+    var(--ink-2) 100%
   );
 }
 
@@ -458,7 +488,8 @@ h3 {
   flex-direction: column;
   align-items: flex-start;
   gap: 22px;
-  padding: 0 var(--gutter) 48px;
+  margin-top: -96px;
+  padding: 0 var(--gutter) 56px;
 }
 
 .hero .kicker {
@@ -496,8 +527,15 @@ h3 {
 
 @media (min-width: 900px) {
   .hero {
+    min-height: 100svh;
     display: grid;
     grid-template-columns: var(--edge) minmax(0, 1fr) var(--edge);
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    height: auto;
   }
 
   /* foto em tela cheia, ancorada à direita; o lado esquerdo (notebook escuro)
@@ -540,6 +578,7 @@ h3 {
     grid-row: 1;
     align-self: center;
     max-width: 640px;
+    margin-top: 0;
     padding: 128px 0 112px;
   }
 
@@ -1239,10 +1278,14 @@ h3 {
   transform: translateY(-2px);
 }
 
-.fab-hide .fab {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(16px) scale(0.96);
+/* com JS, o botão só aparece quando o RevealObserver liga .fab-on —
+   assim ele não pisca no hero enquanto a página carrega */
+@media (scripting: enabled) {
+  html:not(.fab-on) .fab {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.96);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1251,7 +1294,8 @@ h3 {
   }
 
   .load,
-  .ticker-track {
+  .ticker-track,
+  .hero-photo img {
     animation: none;
   }
 
