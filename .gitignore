@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# fotos originais (material de trabalho; o site usa public/fotos)
+/fotos-originais/
